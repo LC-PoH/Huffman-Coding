@@ -21,32 +21,44 @@ const App = () => {
   const [algorithmType, setAlgorithmType] = useState("linear");
   const [showFrequencies, setShowFrequencies] = useState(false);
 
-  useEffect(() => {
-    if (message.length === 0) return;
+useEffect(() => {
+  if (message.length === 0) {
+    setRoot(null);
+    setCodes(null);
+    setEncodedString("");
+    setFixedEncodedCharSize(0);
+    setFixedEncodedStringSize(0);
+    setNormalBinarySize(0);
+    setBitsSaved(null);
+    return;
+  }
 
-    let isLinearAlgorithm = algorithmType === "linear";
-    let [node, huffmanCodes] = generateHuffmanTree(message, isLinearAlgorithm);
-    setRoot(node);
-    setCodes(huffmanCodes);
+  let isLinearAlgorithm = algorithmType === "linear";
+  let [node, huffmanCodes] = generateHuffmanTree(message, isLinearAlgorithm);
+  setRoot(node);
+  setCodes(huffmanCodes);
 
-    // Updating the variables
-    let result = "";
-    for (let i = 0; i < message.length; i++) {
-      result += huffmanCodes.get(message[i]);
-    }
-    setEncodedString(result);
+  // Updating the variables
+  let result = "";
+  for (let i = 0; i < message.length; i++) {
+    result += huffmanCodes.get(message[i]);
+  }
+  setEncodedString(result);
 
-    // Calculating the Fixed Size Coding
-    let letters = new Set([...message]);
-    const n = letters.size;
-    setFixedEncodedCharSize(Math.floor(Math.log2(n) + 1));
-    setFixedEncodedStringSize(message.length * Math.floor(Math.log2(n) + 1));
+  // Calculating the Fixed Size Coding
+  let letters = new Set([...message]);
+  const n = letters.size;
+  const fixedSize = Math.floor(Math.log2(n) + 1);
+  setFixedEncodedCharSize(fixedSize);
+  setFixedEncodedStringSize(message.length * fixedSize);
 
-    // Set the binary size
-    setNormalBinarySize(message.length * 8);
+  // Set the binary size
+  setNormalBinarySize(message.length * 8);
 
-    setBitsSaved(message.length * 8 - result.length);
-  }, [message, algorithmType]);
+  setBitsSaved(message.length * 8 - result.length);
+}, [message, algorithmType]);
+
+
 
   return (
     <div className="App">
